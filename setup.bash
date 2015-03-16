@@ -4,7 +4,7 @@
 BAXTER_DIR=${HOME}/baxter
 ROS_WS=ros_ws
 
-if [ -d "${BAXTER_DIR}/$ROS_WS" ]; then
+if [ -d "${BAXTER_DIR}/${ROS_WS}/src/baxter" ]; then
     printf '\nROS workspace "%s" already setup.\n' "${BAXTER_DIR}/${ROS_WS}";
 else
     printf '\nCreating ROS workspace "%s".\n' "${BAXTER_DIR}/${ROS_WS}";
@@ -12,6 +12,13 @@ else
     # http://sdk.rethinkrobotics.com/wiki/Workstation_Setup
     # http://sdk.rethinkrobotics.com/wiki/Simulator_Installation
     #
+ 
+	# Check for ros installation
+	if [ ! -d "/opt/ros" ] || [ ! "$(ls -A /opt/ros)" ]; then
+		echo "EXITING - No ROS installation found in /opt/ros."
+		echo "Is ROS installed?"
+		exit 1
+	fi 
  
     # Install Baxter SDK Dependencies
     sudo apt-get update
@@ -26,7 +33,23 @@ else
     wstool init .
     wstool merge https://raw.githubusercontent.com/RethinkRobotics/baxter/master/baxter_sdk.rosinstall
     wstool update
-          
+            
+    # Build all the packages
+    cd ${BAXTER_DIR}/${ROS_WS}
+    source /opt/ros/${ROS_DISTRO}/setup.bash
+    catkin_make
+    catkin_make install
+    
+    # Install Baxter environment setup script
+    cd ${BAXTER_DIR}/${ROS_WS}
+    wget https://raw.github.com/RethinkRobotics/baxter/master/baxter.sh
+    chmod +x baxter.sh
+fi
+
+if [ -n "${1}" ] && [ "${1}" == "sim" ] \
+        && [ ! -d "${BAXTER_DIR}/${ROS_WS}/src/baxter_simulator" ]; then
+	printf '\nInstall Simulator.\n'
+	
     # Simulator Installation
     cd ${BAXTER_DIR}/${ROS_WS}/src
     git clone https://github.com/RethinkRobotics/baxter_simulator.git
@@ -39,11 +62,6 @@ else
     source /opt/ros/${ROS_DISTRO}/setup.bash
     catkin_make
     catkin_make install
-    
-    # Install Baxter environment setup script
-    cd ${BAXTER_DIR}/${ROS_WS}
-    wget https://raw.github.com/RethinkRobotics/baxter/master/baxter.sh
-    chmod +x baxter.sh
 fi
 
 printf '\nSetup Baxter environment.\n';
@@ -91,13 +109,6 @@ topdir=$(basename $(readlink -f $(dirname ${BASH_SOURCE[0]})))
 cat <<-EOF > ${tf}
 	[ -s "\${HOME}"/.bashrc ] && source "\${HOME}"/.bashrc
 	[ -s "\${HOME}"/.bash_profile ] && source "\${HOME}"/.bash_profile
-
-	# check for ros installation
-	if [ ! -d "/opt/ros" ] || [ ! "$(ls -A /opt/ros)" ]; then
-		echo "EXITING - No ROS installation found in /opt/ros."
-		echo "Is ROS installed?"
-		exit 1
-	fi
 
 	# if set, verify user has modified the baxter_hostname
 	if [ -n ${baxter_hostname} ] && \
