@@ -34,11 +34,13 @@ Open a new terminal window and setup appropriate ROS environment variables:
     cd ~/baxter
     ./setup.bash
 
->NOTE: The first time you use this script it will automatically create a ROS workspace with the Baxter SDK and Simulator. You need to have access to the [Baxter SDK](https://github.com/RethinkRobotics/baxter) and the [Baxter Simulator](https://github.com/RethinkRobotics/baxter_simulator) on GitHub.
+>NOTE: The first time you use this script it will automatically create a ROS workspace with the [Baxter SDK](https://github.com/RethinkRobotics/baxter) and the [Baxter Simulator](https://github.com/RethinkRobotics/baxter_simulator).
 
 In case you want to use a simulated Baxter start the setup script with an additional `sim` argument:
 
     ./setup.bash sim
+
+>NOTE: The first time you use this script with sim it will automatically install the [Baxter Simulator](https://github.com/RethinkRobotics/baxter_simulator).
 
 Now you could test your setup using for instance the [Wobbler Example](http://sdk.rethinkrobotics.com/wiki/Wobbler_Example):
 
