@@ -2,8 +2,9 @@
 # Start Baxter simulator
 
 # where
-BAXTER_DIR=$(basename $(readlink -f $(dirname ${BASH_SOURCE[0]})))
+BAXTER_DIR=${HOME}/baxter
 ROS_WS=ros_ws
+BAXTER_WS= ${BAXTER_DIR}/${ROS_WS}
 
 # set launch command
 if [ -n "${1}" ]; then
@@ -12,10 +13,8 @@ else
     LAUNCH_COMMAND="roslaunch baxter_gazebo baxter_world.launch"
 fi
 
-# now start it...
-printf '\nStarting Baxter Simulator\n';
-
-#-----------------------------------------------------------------------------#
+# install simulator if necessary
+. install_simulator.bash
 
 # check for ros installation
 if [ ! -d "/opt/ros" ] || [ ! "$(ls -A /opt/ros)" ]; then
@@ -25,13 +24,18 @@ if [ ! -d "/opt/ros" ] || [ ! "$(ls -A /opt/ros)" ]; then
 fi
 
 # verify that the workspace has been compiled.
-if [ ! -s ${BAXTER_DIR}/${ROS_WS}/devel/setup.bash ]; then
-	echo -ne "EXITING - Workspace ${BAXTER_DIR}/${ROS_WS} is not build.\n"
+if [ ! -s ${BAXTER_WS}/devel/setup.bash ]; then
+	echo -ne "EXITING - Workspace ${BAXTER_WS} is not build.\n"
 	exit 1
 fi
 
+# now start it...
+printf '\nStarting Baxter Simulator\n';
+
+#-----------------------------------------------------------------------------#
+
 # source the catkin setup bash script
-source ${BAXTER_DIR}/${ROS_WS}/devel/setup.bash
+source ${BAXTER_WS}/devel/setup.bash
 
 # execute launch command
 ${LAUNCH_COMMAND}

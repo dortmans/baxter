@@ -1,68 +1,12 @@
 #!/usr/bin/env bash
-# Setup Baxter workspace
+# Setup Baxter environment
 
 BAXTER_DIR=${HOME}/baxter
 ROS_WS=ros_ws
+BAXTER_WS= ${BAXTER_DIR}/${ROS_WS}
 
-if [ -d "${BAXTER_DIR}/${ROS_WS}/src/baxter" ]; then
-    printf '\nROS workspace "%s" already setup.\n' "${BAXTER_DIR}/${ROS_WS}";
-else
-    printf '\nCreating ROS workspace "%s".\n' "${BAXTER_DIR}/${ROS_WS}";
-    #
-    # http://sdk.rethinkrobotics.com/wiki/Workstation_Setup
-    # http://sdk.rethinkrobotics.com/wiki/Simulator_Installation
-    #
- 
-	# Check for ros installation
-	if [ ! -d "/opt/ros" ] || [ ! "$(ls -A /opt/ros)" ]; then
-		echo "EXITING - No ROS installation found in /opt/ros."
-		echo "Is ROS installed?"
-		exit 1
-	fi 
- 
-    # Install Baxter SDK Dependencies
-    sudo apt-get update
-    sudo apt-get -y install git-core python-argparse python-wstool python-vcstools python-rosdep \
-                            ros-${ROS_DISTRO}-control-msgs ros-${ROS_DISTRO}-joystick-drivers
-    
-    # Create Baxter Development Workspace
-    mkdir -p ${BAXTER_DIR}/${ROS_WS}/src
-                            
-    # Install Baxter Research Robot SDK
-    cd ${BAXTER_DIR}/${ROS_WS}/src
-    wstool init .
-    wstool merge https://raw.githubusercontent.com/RethinkRobotics/baxter/master/baxter_sdk.rosinstall
-    wstool update
-            
-    # Build all the packages
-    cd ${BAXTER_DIR}/${ROS_WS}
-    source /opt/ros/${ROS_DISTRO}/setup.bash
-    catkin_make
-    catkin_make install
-    
-    # Install Baxter environment setup script
-    cd ${BAXTER_DIR}/${ROS_WS}
-    wget https://raw.github.com/RethinkRobotics/baxter/master/baxter.sh
-    chmod +x baxter.sh
-fi
-
-if [ -n "${1}" ] && [ "${1}" == "sim" ] \
-        && [ ! -d "${BAXTER_DIR}/${ROS_WS}/src/baxter_simulator" ]; then
-	printf '\nInstall Simulator.\n'
-	
-    # Simulator Installation
-    cd ${BAXTER_DIR}/${ROS_WS}/src
-    git clone https://github.com/RethinkRobotics/baxter_simulator.git
-    cd ${BAXTER_DIR}/${ROS_WS}/src
-    wstool merge baxter_simulator/baxter_simulator.rosinstall
-    wstool update
-    
-    # Build all the packages
-    cd ${BAXTER_DIR}/${ROS_WS}
-    source /opt/ros/${ROS_DISTRO}/setup.bash
-    catkin_make
-    catkin_make install
-fi
+# install Baxter SDK if necessary
+. install_sdk.bash
 
 printf '\nSetup Baxter environment.\n';
 
@@ -154,13 +98,13 @@ your_ip or your_hostname.\n"
 
 
     # verify that the workspace has been compiled.
-    if [ ! -s ${BAXTER_DIR}/${ROS_WS}/devel/setup.bash ]; then
-	    echo -ne "EXITING - Workspace ${BAXTER_DIR}/${ROS_WS} is not build.\n"
+    if [ ! -s ${BAXTER_WS}/devel/setup.bash ]; then
+	    echo -ne "EXITING - Workspace ${BAXTER_WS} is not build.\n"
 	    exit 1
     fi
 
     # source the catkin setup bash script
-    source ${BAXTER_DIR}/${ROS_WS}/devel/setup.bash
+    source ${BAXTER_WS}/devel/setup.bash
 
 	# setup the bash prompt
 	export __ROS_PROMPT=\${__ROS_PROMPT:-0}
