@@ -18,9 +18,9 @@ Then make the scripts executable:
     cd ~/baxter
     chmod +x *.bash
 
-Edit the `config` file to set the correct hostname/IPadres of your Baxter robot and of your Workstation.
+## Using your Real Baxter
 
-## Using your Baxter
+Edit the `config` file to set the correct hostname/IPadres of your Baxter robot and of your Workstation.
 
 Open a new terminal window and setup appropriate ROS environment variables:
 
@@ -29,19 +29,27 @@ Open a new terminal window and setup appropriate ROS environment variables:
 
 >NOTE: This script will automatically create a ROS workspace with the [Baxter SDK](https://github.com/RethinkRobotics/baxter).
 
-In case you want to use a simulated Baxter start the setup script with an additional `sim` argument:
-
-    ./setup.bash sim
-
 Now you could test your setup using for instance the [Wobbler Example](http://sdk.rethinkrobotics.com/wiki/Wobbler_Example):
 
     rosrun baxter_examples joint_velocity_wobbler.py
 
-## Simulated Baxter
+More examples to test kan be found [here](http://sdk.rethinkrobotics.com/wiki/Examples#SDK_Examples) and [here](http://sdk.rethinkrobotics.com/wiki/Showcase).
 
-To start the Baxter Simulator (in Gazebo) open a new terminal window and enter following commands:
+## Using a Simulated Baxter
+
+In case you want to use a Baxter Simulator (in Gazebo) open a new terminal window and enter following commands:
 
     cd ~/baxter
     ./start_simulator.bash
 
 >NOTE: The first time you run this script it will automatically install the [Baxter Simulator](https://github.com/RethinkRobotics/baxter_simulator).
+
+Then open a new terminal and start the setup script with an additional `sim` argument:
+
+    cd ~/baxter
+    ./setup.bash sim
+
+Then you can run any example and see your simulated Baxter behave in the same way as your real robot would.
+
+
+
