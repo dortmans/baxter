@@ -4,10 +4,10 @@
 # where
 BAXTER_DIR=${HOME}/baxter
 ROS_WS=ros_ws
-BAXTER_WS= ${BAXTER_DIR}/${ROS_WS}
+BAXTER_WS=${BAXTER_DIR}/${ROS_WS}
 
 # check if simulator package has been installed
-if [ ! -d "${BAXTER_DIR}/${ROS_WS}/src/baxter_simulator" ]; then
+if [ ! -d "${BAXTER_WS}/src/baxter_simulator" ]; then
 
     printf '\nInstalling Baxter Simulator.\n'
 
@@ -43,14 +43,14 @@ if [ ! -d "${BAXTER_DIR}/${ROS_WS}/src/baxter_simulator" ]; then
     ros-${ROS_DISTRO}-joystick-drivers
         	
     # Baxter Simulator Installation
-    cd ${BAXTER_DIR}/${ROS_WS}/src
+    cd ${BAXTER_WS}/src
     git clone https://github.com/RethinkRobotics/baxter_simulator.git
-    cd ${BAXTER_DIR}/${ROS_WS}/src
+    cd ${BAXTER_WS}/src
     wstool merge baxter_simulator/baxter_simulator.rosinstall
     wstool update
     
     # Build all the packages
-    cd ${BAXTER_DIR}/${ROS_WS}
+    cd ${BAXTER_WS}
     source /opt/ros/${ROS_DISTRO}/setup.bash
     catkin_make
     catkin_make install

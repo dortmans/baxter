@@ -4,7 +4,7 @@
 # where
 BAXTER_DIR=${HOME}/baxter
 ROS_WS=ros_ws
-BAXTER_WS= ${BAXTER_DIR}/${ROS_WS}
+BAXTER_WS=${BAXTER_DIR}/${ROS_WS}
 
 # set launch command
 if [ -n "${1}" ]; then

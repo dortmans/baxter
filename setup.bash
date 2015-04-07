@@ -3,7 +3,7 @@
 
 BAXTER_DIR=${HOME}/baxter
 ROS_WS=ros_ws
-BAXTER_WS= ${BAXTER_DIR}/${ROS_WS}
+BAXTER_WS=${BAXTER_DIR}/${ROS_WS}
 
 # install Baxter SDK if necessary
 . install_sdk.bash
